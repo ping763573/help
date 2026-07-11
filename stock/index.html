@@ -276,13 +276,14 @@ section:first-of-type{border-top:none;}
 .etf-card .expand{ display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); font-size:.85rem; color:var(--ink-soft); line-height:1.7;}
 .etf-card.open .expand{ display:block; }
 .etf-card .peek{ position:absolute; top:16px; right:16px; font-family:var(--mono); font-size:.7rem; color:var(--stamp);}
-.etf-yahoo-link{
+.etf-yahoo-link, .broker-link{
   display:inline-flex; align-items:center; gap:4px; margin-top:14px; 
   padding:4px 12px; border:1px solid var(--stamp); border-radius:14px; 
   color:var(--stamp); font-size:.78rem; text-decoration:none; 
   transition:all .2s ease; background:var(--paper);
 }
-.etf-yahoo-link:hover{ background:var(--stamp); color:var(--stamp-ink); }
+.etf-yahoo-link:hover, .broker-link:hover{ background:var(--stamp); color:var(--stamp-ink); }
+.broker-link{ margin-top:0; padding:4px 10px; font-size:.72rem; }
 
 /* ============ Broker table + toggle ============ */
 .pk-toggle{ display:flex; gap:0; margin-bottom:26px; border:1px solid var(--line); border-radius:24px; width:fit-content; overflow:hidden;}
@@ -539,6 +540,7 @@ footer{ padding:60px 0 40px; text-align:center; }
             <th data-key="single">單筆買進手續費<span class="arrow">▾</span></th>
             <th data-key="dca">定期定額手續費</th>
             <th data-key="note">特色備註</th>
+            <th>官方連結</th>
           </tr>
         </thead>
         <tbody id="brokerBody"></tbody>
@@ -727,14 +729,14 @@ const CATEGORIES = [
 ];
 
 const BROKERS = [
-  {name:"國泰證券", single:"0.08%（ETF均一價3美元）", dca:"每筆均一價 0.1 美元", note:"定期定額與ETF單筆均一價極具優勢，適合小資與ETF長期存股族。", tag:"小資推薦"},
-  {name:"永豐金證券", single:"0.08% ~ 0.2%", dca:"每筆 0.1 美元或台幣 1 元", note:"「豐存股」知名度高，台幣/外幣雙通道扣款彈性高。", tag:"品牌知名"},
-  {name:"富邦證券", single:"0.06% ~ 0.25%（新戶0.06%起）", dca:"0.1%（無最低收費）", note:"單筆常有破盤手續費優惠，App操作介面直覺友善。", tag:"新戶優惠"},
-  {name:"元大證券", single:"0.1%", dca:"0.1%（每筆最高1美元）", note:"龍頭券商系統穩定，定期定額設有最高1美元上限，適合中大額存股。", tag:"系統穩定"},
-  {name:"凱基證券", single:"0.1%", dca:"每筆 0.03 美元或台幣 1 元", note:"定期定額手續費極低，系統資源與研究報告豐富。", tag:"低費首選"},
-  {name:"群益證券", single:"0.08% ~ 0.2%（月成交滿100美元享0.08%）", dca:"每筆 0.03 美元（約台幣1元）", note:"單筆與定期定額皆提供相當具競爭力的極低費率。", tag:"低費首選"},
-  {name:"玉山證券", single:"0.25%", dca:"$149以下0.2%／$150-666:0.3美元／$667以上0.18%", note:"適合玉山金控既有客戶整合帳戶管理，定期定額採階梯式收費。", tag:"金控整合"},
-  {name:"中信證券", single:"牌告0.5%（最低收費35美元）", dca:"依最新活動或個別營業員洽詢為主", note:"牌告價格較高，主打高資產VIP客群與專屬理財規劃。", tag:"VIP客群"},
+  {name:"國泰證券", single:"0.08%（ETF均一價3美元）", dca:"每筆均一價 0.1 美元", note:"定期定額與ETF單筆均一價極具優勢，適合小資與ETF長期存股族。", tag:"小資推薦", url:"https://www.cathaysec.com.tw/"},
+  {name:"永豐金證券", single:"0.08% ~ 0.2%", dca:"每筆 0.1 美元或台幣 1 元", note:"「豐存股」知名度高，台幣/外幣雙通道扣款彈性高。", tag:"品牌知名", url:"https://aiinvest.sinotrade.com.tw/"},
+  {name:"富邦證券", single:"0.06% ~ 0.25%（新戶0.06%起）", dca:"0.1%（無最低收費）", note:"單筆常有破盤手續費優惠，App操作介面直覺友善。", tag:"新戶優惠", url:"https://www.fubon.com/securities/"},
+  {name:"元大證券", single:"0.1%", dca:"0.1%（每筆最高1美元）", note:"龍頭券商系統穩定，定期定額設有最高1美元上限，適合中大額存股。", tag:"系統穩定", url:"https://www.yuanta.com.tw/"},
+  {name:"凱基證券", single:"0.1%", dca:"每筆 0.03 美元或台幣 1 元", note:"定期定額手續費極低，系統資源與研究報告豐富。", tag:"低費首選", url:"https://event.kgi.com.tw/news/event/win-rewards/index.aspx?src=S_113&prod=P_160&utm_content=stock_rewards&gad_source=1&gad_campaignid=23452226543&gbraid=0AAAABCJbHesP0bqZk8QaIgkbaHOJQUN3L&gclid=CjwKCAjw08fSBhA7EiwAfbQTsJBO0dtG428Ik-erveB5FiOhYe7l8mizwlT8ronwnW8vOVJAmEOHmxoCF5kQAvD_BwE"},
+  {name:"群益證券", single:"0.08% ~ 0.2%（月成交滿100美元享0.08%）", dca:"每筆 0.03 美元（約台幣1元）", note:"單筆與定期定額皆提供相當具競爭力的極低費率。", tag:"低費首選", url:"https://www.capital.com.tw/"},
+  {name:"玉山證券", single:"0.25%", dca:"$149以下0.2%／$150-666:0.3美元／$667以上0.18%", note:"適合玉山金控既有客戶整合帳戶管理，定期定額採階梯式收費。", tag:"金控整合", url:"https://www.esunsec.com.tw/"},
+  {name:"中信證券", single:"牌告0.5%（最低收費35美元）", dca:"依最新活動或個別營業員洽詢為主", note:"牌告價格較高，主打高資產VIP客群與專屬理財規劃。", tag:"VIP客群", url:"https://www.ctbcsec.com/2020/_event/open-guide/index1.html?utm_source=google&utm_medium=sem&utm_campaign=ads_page&gad_source=1&gad_campaignid=23703127404&gbraid=0AAAAACSxC55QquoTVKO4FUfRH29pluiKh&gclid=CjwKCAjw08fSBhA7EiwAfbQTsISN2ouzKf8DHDwgKDkusbN9ZaIwZWRKrdeJhRuWZkqn7IxX9LOLdBoCZ0gQAvD_BwE"},
 ];
 
 const ALLOC = {
@@ -891,6 +893,7 @@ function renderBrokers(){
       <td class="mono">${b.single}</td>
       <td class="mono">${b.dca}</td>
       <td style="white-space:normal; color:var(--ink-soft); font-size:.85rem; min-width:220px;">${b.note}</td>
+      <td><a href="${b.url}" target="_blank" rel="noopener noreferrer" class="broker-link">🔗 官網</a></td>
     </tr>
   `).join("");
 }
