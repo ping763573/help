@@ -276,6 +276,13 @@ section:first-of-type{border-top:none;}
 .etf-card .expand{ display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); font-size:.85rem; color:var(--ink-soft); line-height:1.7;}
 .etf-card.open .expand{ display:block; }
 .etf-card .peek{ position:absolute; top:16px; right:16px; font-family:var(--mono); font-size:.7rem; color:var(--stamp);}
+.etf-yahoo-link{
+  display:inline-flex; align-items:center; gap:4px; margin-top:14px; 
+  padding:4px 12px; border:1px solid var(--stamp); border-radius:14px; 
+  color:var(--stamp); font-size:.78rem; text-decoration:none; 
+  transition:all .2s ease; background:var(--paper);
+}
+.etf-yahoo-link:hover{ background:var(--stamp); color:var(--stamp-ink); }
 
 /* ============ Broker table + toggle ============ */
 .pk-toggle{ display:flex; gap:0; margin-bottom:26px; border:1px solid var(--line); border-radius:24px; width:fit-content; overflow:hidden;}
@@ -843,7 +850,7 @@ catGrid.addEventListener("click",(ev)=>{
 });
 
 /* ============================================================
-   RENDER: ETF detail flip cards
+   RENDER: ETF detail flip cards (Added Yahoo Finance Link)
    ============================================================ */
 const detailGrid = document.getElementById("detailGrid");
 detailGrid.innerHTML = ETFS.map(e=>`
@@ -857,10 +864,13 @@ detailGrid.innerHTML = ETFS.map(e=>`
       <p style="margin-top:8px;"><strong style="color:var(--green)">優點：</strong>${e.pro}</p>
       <p style="margin-top:6px;"><strong style="color:var(--red)">缺點：</strong>${e.con}</p>
       <p style="margin-top:6px;"><strong style="color:var(--gold)">適合誰：</strong>${e.who}</p>
+      <a href="https://tw.stock.yahoo.com/quote/${e.ticker}" target="_blank" rel="noopener noreferrer" class="etf-yahoo-link">🔍 前往奇摩股市查看 ${e.ticker}</a>
     </div>
   </div>
 `).join("");
 detailGrid.addEventListener("click",(ev)=>{
+  // 如果使用者點擊的是 a 標籤 (超連結)，就不觸發卡片的收合
+  if(ev.target.closest("a")) return; 
   const card = ev.target.closest(".etf-card"); if(!card) return;
   card.classList.toggle("open");
 });
