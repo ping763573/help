@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light" data-scale="normal">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國外 ETF 投資存摺 — 新手互動教學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ Design Tokens ============ */
+:root{
+  --paper:#F3EEE0;
+  --paper-alt:#FBF8EF;
+  --paper-deep:#E9E1CC;
+  --ink:#1D2B45;
+  --ink-soft:#5B6478;
+  --ink-faint:#8B93A4;
+  --stamp:#AE3B34;
+  --stamp-dark:#832C27;
+  --stamp-ink:#F4E9DD;
+  --gold:#AD8A2E;
+  --gold-soft:#D8C68C;
+  --line:#CBC0A2;
+  --line-soft:#DED5BC;
+  --green:#3C6B4A;
+  --red:#AE3B34;
+  --shadow:rgba(29,43,69,.14);
+  --radius:2px;
+  --serif:'Noto Serif TC', serif;
+  --sans:'Noto Sans TC', sans-serif;
+  --mono:'JetBrains Mono', monospace;
+  --maxw:1100px;
+}
+html[data-theme="dark"]{
+  --paper:#0F1626;
+  --paper-alt:#151E33;
+  --paper-deep:#0A0F1C;
+  --ink:#EFE8D6;
+  --ink-soft:#AEB5C7;
+  --ink-faint:#707A8F;
+  --stamp:#D9645A;
+  --stamp-dark:#B34A41;
+  --stamp-ink:#2A1512;
+  --gold:#E3C15E;
+  --gold-soft:#8A742F;
+  --line:#2A3550;
+  --line-soft:#20293E;
+  --green:#6FBE87;
+  --red:#E08079;
+  --shadow:rgba(0,0,0,.5);
+}
+html[data-scale="large"]{ font-size:19px; }
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.8;
+  transition:background .4s ease, color .4s ease;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{ font-family:var(--serif); margin:0; color:var(--ink); }
+p{margin:0;}
+.mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+a{color:inherit;}
+button{font-family:inherit; cursor:pointer;}
+
+/* ledger paper texture */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:0;
+  background-image:
+    repeating-linear-gradient(transparent, transparent 37px, var(--line-soft) 38px);
+  opacity:.35;
+}
+
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+
+/* ============ Top Controls ============ */
+.topbar{
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 24px;
+  background:linear-gradient(to bottom, var(--paper) 70%, transparent);
+  backdrop-filter:blur(6px);
+}
+.brandmark{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:700; font-size:1.05rem; letter-spacing:.03em;}
+.brandmark .chip{
+  width:26px; height:26px; border-radius:50%;
+  background:var(--stamp); color:var(--stamp-ink);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--serif); font-size:.75rem; font-weight:900;
+  box-shadow:0 0 0 2px var(--paper), 0 0 0 3px var(--stamp);
+}
+.controls{ display:flex; gap:8px; }
+.ctrl-btn{
+  border:1px solid var(--line); background:var(--paper-alt); color:var(--ink-soft);
+  padding:7px 12px; border-radius:20px; font-size:.78rem; font-weight:500;
+  display:flex; align-items:center; gap:6px;
+  transition:all .2s ease;
+}
+.ctrl-btn:hover{ border-color:var(--stamp); color:var(--stamp); }
+.ctrl-btn.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+/* ============ Side Ledger Nav (desktop) ============ */
+.tabnav{
+  position:fixed; right:18px; top:50%; transform:translateY(-50%);
+  z-index:40; display:flex; flex-direction:column; gap:2px;
+}
+.tabnav a{
+  width:10px; height:26px; border-radius:5px;
+  background:var(--line);
+  position:relative;
+  transition:all .25s ease;
+}
+.tabnav a.active{ background:var(--stamp); width:14px; }
+.tabnav a .tip{
+  position:absolute; right:22px; top:50%; transform:translateY(-50%);
+  white-space:nowrap; background:var(--ink); color:var(--paper);
+  font-size:.72rem; padding:4px 9px; border-radius:3px;
+  opacity:0; pointer-events:none; transition:opacity .2s ease;
+}
+.tabnav a:hover .tip{ opacity:1; }
+@media (max-width:860px){ .tabnav{display:none;} }
+
+/* ============ Hero ============ */
+.hero{
+  min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+  position:relative; overflow:hidden; padding:90px 0 60px;
+}
+.hero .wrap{ display:grid; grid-template-columns:1.15fr .85fr; gap:40px; align-items:center;}
+@media (max-width:860px){ .hero .wrap{ grid-template-columns:1fr; } }
+.eyebrow{
+  font-family:var(--mono); font-size:.78rem; letter-spacing:.18em; color:var(--stamp);
+  text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:8px;
+}
+.eyebrow::before{ content:""; width:22px; height:1px; background:var(--stamp); }
+.hero h1{
+  font-size:clamp(2.3rem, 5.2vw, 3.6rem); font-weight:900; line-height:1.28; letter-spacing:.01em;
+}
+.hero h1 em{ font-style:normal; color:var(--stamp); }
+.hero .lede{ margin-top:22px; font-size:1.08rem; color:var(--ink-soft); max-width:46ch; }
+.hero .cta-row{ margin-top:34px; display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+.btn-primary{
+  background:var(--ink); color:var(--paper); border:none; padding:14px 26px;
+  border-radius:3px; font-weight:700; font-size:.95rem; letter-spacing:.02em;
+  display:inline-flex; align-items:center; gap:10px;
+  box-shadow:3px 3px 0 var(--stamp);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.btn-primary:hover{ transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--stamp); }
+.btn-ghost{
+  background:none; border:1px solid var(--line); color:var(--ink-soft);
+  padding:13px 22px; border-radius:3px; font-size:.9rem; font-weight:500;
+}
+.btn-ghost:hover{ border-color:var(--ink); color:var(--ink); }
+
+.passbook-art{ position:relative; aspect-ratio:3/4; }
+.pb-cover{
+  position:absolute; inset:0; border-radius:6px;
+  background:linear-gradient(135deg, var(--ink) 0%, #26365A 55%, var(--ink) 100%);
+  box-shadow:0 20px 50px var(--shadow), inset 0 0 0 1px rgba(255,255,255,.06);
+  transform:rotate(-3deg);
+  overflow:hidden;
+}
+.pb-cover::before{
+  content:""; position:absolute; left:14px; top:14px; right:14px; bottom:14px;
+  border:1px solid var(--gold-soft); border-radius:3px; opacity:.55;
+}
+.pb-cover .pb-title{
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; color:var(--gold-soft); font-family:var(--serif); padding:20px;
+}
+.pb-cover .pb-title .big{ font-size:1.5rem; font-weight:900; color:#EFE3C0; letter-spacing:.12em; margin-bottom:10px;}
+.pb-cover .pb-title .small{ font-size:.78rem; letter-spacing:.3em; opacity:.8; }
+.pb-cover .pb-emblem{ margin-top:22px; width:52px; height:52px; border:2px solid var(--gold-soft); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem;}
+.pb-stub{
+  position:absolute; width:88%; aspect-ratio:3/4; left:8%; top:14px;
+  background:var(--paper-alt); border-radius:5px; z-index:-1;
+  box-shadow:0 10px 30px var(--shadow);
+  transform:rotate(2deg);
+}
+.stamp-mark{
+  position:absolute; width:120px; height:120px; right:-10px; bottom:-6px;
+  transform:rotate(-16deg) scale(0);
+  animation:stampIn .5s cubic-bezier(.2,1.5,.4,1) 1.1s forwards;
+}
+@keyframes stampIn{ 0%{transform:rotate(-16deg) scale(2.2); opacity:0;} 60%{opacity:1;} 100%{transform:rotate(-16deg) scale(1); opacity:1;} }
+
+/* ============ Section shell ============ */
+section{ position:relative; padding:90px 0; border-top:1px dashed var(--line); }
+section:first-of-type{border-top:none;}
+.sec-head{ margin-bottom:44px; max-width:64ch; }
+.sec-num{ font-family:var(--mono); color:var(--stamp); font-size:.85rem; letter-spacing:.15em; margin-bottom:10px; display:block;}
+.sec-head h2{ font-size:clamp(1.7rem,3vw,2.3rem); font-weight:900; line-height:1.35;}
+.sec-head .desc{ margin-top:14px; color:var(--ink-soft); font-size:1rem; line-height:1.85;}
+
+.reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.in{ opacity:1; transform:translateY(0); }
+
+/* ============ Cards: core advantages ============ */
+.adv-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+@media (max-width:760px){ .adv-grid{grid-template-columns:1fr;} }
+.adv-card{
+  background:var(--paper-alt); border:1px solid var(--line); border-radius:4px; padding:26px 22px;
+  position:relative;
+}
+.adv-card .ico{ font-size:1.8rem; margin-bottom:14px; display:block;}
+.adv-card h3{ font-size:1.08rem; margin-bottom:8px; }
+.adv-card p{ color:var(--ink-soft); font-size:.92rem; }
+.adv-card .idx{ position:absolute; top:16px; right:18px; font-family:var(--mono); color:var(--line); font-size:1.6rem; font-weight:700;}
+
+/* ============ Filter chips ============ */
+.chiprow{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
+.chip{
+  border:1px solid var(--line); background:var(--paper-alt); color:var(--ink-soft);
+  padding:8px 15px; border-radius:20px; font-size:.85rem; font-weight:500;
+}
+.chip.active{ background:var(--stamp); border-color:var(--stamp); color:var(--stamp-ink); }
+
+/* ============ ETF Ledger Table ============ */
+.ledger{ width:100%; border-collapse:collapse; font-size:.92rem; }
+.ledger-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:4px; background:var(--paper-alt);}
+.ledger th{
+  text-align:left; padding:13px 16px; font-family:var(--mono); font-size:.72rem;
+  letter-spacing:.08em; color:var(--ink-faint); text-transform:uppercase;
+  border-bottom:1px solid var(--line); white-space:nowrap; cursor:pointer; user-select:none;
+}
+.ledger th:hover{ color:var(--stamp); }
+.ledger th .arrow{ opacity:.4; margin-left:3px; font-size:.7em;}
+.ledger td{ padding:13px 16px; border-bottom:1px solid var(--line-soft); white-space:nowrap; }
+.ledger tbody tr{ transition:background .15s ease; }
+.ledger tbody tr:hover{ background:var(--paper-deep); }
+.ledger tbody tr:last-child td{ border-bottom:none; }
+.tk{ font-weight:800; font-family:var(--mono); }
+.tk-name{ color:var(--ink-soft); font-size:.82rem; }
+.pos{ color:var(--green); font-weight:700; font-family:var(--mono);}
+.neg{ color:var(--red); font-weight:700; font-family:var(--mono);}
+.tag-mini{ display:inline-block; font-size:.68rem; padding:2px 8px; border-radius:10px; border:1px solid var(--line); color:var(--ink-faint); margin-right:4px;}
+.hint-note{ margin-top:14px; font-size:.82rem; color:var(--ink-faint); }
+
+/* ============ Category cards (accordion) ============ */
+.cat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width:860px){ .cat-grid{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .cat-grid{ grid-template-columns:1fr;} }
+.cat-card{
+  border:1px solid var(--line); border-radius:4px; background:var(--paper-alt); overflow:hidden;
+  cursor:pointer; transition:border-color .2s ease;
+}
+.cat-card.open{ border-color:var(--stamp); }
+.cat-head{ padding:20px; display:flex; align-items:center; gap:12px;}
+.cat-head .emo{ font-size:1.5rem;}
+.cat-head h4{ font-size:1rem; flex:1;}
+.cat-head .plus{ font-family:var(--mono); color:var(--ink-faint); transition:transform .25s ease;}
+.cat-card.open .plus{ transform:rotate(45deg); color:var(--stamp);}
+.cat-body{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+.cat-card.open .cat-body{ max-height:600px; }
+.cat-body-in{ padding:0 20px 20px; color:var(--ink-soft); font-size:.88rem; }
+.cat-body-in .members{ margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;}
+.cat-body-in .members span{ font-family:var(--mono); background:var(--paper-deep); padding:3px 9px; border-radius:3px; font-size:.78rem; font-weight:700;}
+
+/* ============ ETF Detail Cards (flip style) ============ */
+.etf-detail-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:14px; }
+.etf-card{
+  border:1px solid var(--line); background:var(--paper-alt); border-radius:4px; padding:18px;
+  cursor:pointer; position:relative; min-height:150px;
+}
+.etf-card .tk{ font-size:1.3rem; }
+.etf-card .full{ color:var(--ink-faint); font-size:.78rem; margin-top:2px;}
+.etf-card .metric-row{ display:flex; justify-content:space-between; margin-top:14px; font-size:.82rem;}
+.etf-card .expand{ display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); font-size:.85rem; color:var(--ink-soft); line-height:1.7;}
+.etf-card.open .expand{ display:block; }
+.etf-card .peek{ position:absolute; top:16px; right:16px; font-family:var(--mono); font-size:.7rem; color:var(--stamp);}
+
+/* ============ Broker table + toggle ============ */
+.pk-toggle{ display:flex; gap:0; margin-bottom:26px; border:1px solid var(--line); border-radius:24px; width:fit-content; overflow:hidden;}
+.pk-toggle button{ border:none; background:none; padding:10px 22px; font-size:.88rem; color:var(--ink-soft); font-weight:600;}
+.pk-toggle button.active{ background:var(--ink); color:var(--paper); }
+.pk-cols{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media (max-width:760px){ .pk-cols{grid-template-columns:1fr;} }
+.pk-col{ border:1px solid var(--line); border-radius:4px; padding:22px; background:var(--paper-alt);}
+.pk-col h4{ font-size:1rem; margin-bottom:14px; display:flex; align-items:center; gap:8px;}
+.pk-col.pro h4{ color:var(--green); }
+.pk-col.con h4{ color:var(--red); }
+.pk-col ul{ margin:0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:12px;}
+.pk-col li{ font-size:.9rem; color:var(--ink-soft); padding-left:20px; position:relative;}
+.pk-col.pro li::before{ content:"＋"; position:absolute; left:0; color:var(--green); font-weight:900;}
+.pk-col.con li::before{ content:"－"; position:absolute; left:0; color:var(--red); font-weight:900;}
+
+/* ============ Quiz ============ */
+.quiz-box{
+  border:1px solid var(--line); border-radius:6px; background:var(--paper-alt); padding:34px;
+  position:relative; overflow:hidden;
+}
+.quiz-q{ font-size:1.15rem; font-weight:700; margin-bottom:22px; }
+.quiz-opts{ display:flex; flex-direction:column; gap:12px; }
+.quiz-opt{
+  text-align:left; border:1px solid var(--line); background:var(--paper); border-radius:4px;
+  padding:16px 18px; font-size:.94rem; color:var(--ink); display:flex; gap:14px; align-items:flex-start;
+  transition:all .2s ease;
+}
+.quiz-opt .letter{ font-family:var(--mono); font-weight:900; color:var(--stamp); }
+.quiz-opt:hover{ border-color:var(--stamp); transform:translateX(3px); }
+.quiz-result{ display:none; text-align:center; padding:20px 0; }
+.quiz-result.show{ display:block; }
+.quiz-result .stamp-final{
+  width:130px; height:130px; margin:0 auto 20px; border:5px solid var(--stamp); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; flex-direction:column; color:var(--stamp);
+  transform:rotate(-10deg) scale(0); animation:stampIn .45s cubic-bezier(.2,1.6,.4,1) forwards;
+  font-family:var(--serif);
+}
+.quiz-result .stamp-final .t1{ font-size:1.5rem; font-weight:900; }
+.quiz-result .stamp-final .t2{ font-size:.65rem; letter-spacing:.15em; margin-top:2px;}
+.quiz-result p.desc{ max-width:48ch; margin:0 auto; color:var(--ink-soft); }
+.quiz-retry{ margin-top:20px; background:none; border:1px solid var(--line); padding:9px 18px; border-radius:20px; font-size:.82rem; color:var(--ink-soft);}
+
+/* ============ Allocation ============ */
+.alloc-tabs{ display:flex; gap:10px; margin-bottom:8px; flex-wrap:wrap;}
+.alloc-tab{ border:1px solid var(--line); background:var(--paper-alt); padding:10px 20px; border-radius:4px; font-weight:700; font-size:.9rem; color:var(--ink-soft);}
+.alloc-tab.active{ border-color:var(--stamp); color:var(--stamp); background:var(--paper); }
+.horizon-toggle{ display:flex; gap:8px; margin:18px 0 30px; }
+.horizon-toggle button{ border:1px solid var(--line); background:none; padding:6px 16px; border-radius:16px; font-size:.8rem; color:var(--ink-faint);}
+.horizon-toggle button.active{ background:var(--ink); color:var(--paper); border-color:var(--ink);}
+.alloc-panel{ display:none; }
+.alloc-panel.show{ display:grid; grid-template-columns:.9fr 1.1fr; gap:40px; align-items:center;}
+@media (max-width:760px){ .alloc-panel.show{grid-template-columns:1fr;} }
+.donut-wrap{ display:flex; justify-content:center; }
+.legend{ display:flex; flex-direction:column; gap:12px; }
+.legend-row{ display:flex; align-items:center; gap:12px; font-size:.92rem;}
+.legend-swatch{ width:14px; height:14px; border-radius:3px; flex-shrink:0;}
+.legend-row .pct{ font-family:var(--mono); font-weight:800; margin-left:auto; }
+.alloc-note{ margin-top:22px; padding:16px 18px; border-left:3px solid var(--stamp); background:var(--paper-deep); font-size:.88rem; color:var(--ink-soft); border-radius:0 4px 4px 0;}
+
+/* ============ DCA calculator ============ */
+.dca-box{ display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:start;}
+@media (max-width:760px){ .dca-box{grid-template-columns:1fr;} }
+.field{ margin-bottom:20px; }
+.field label{ display:block; font-size:.85rem; color:var(--ink-soft); margin-bottom:8px; font-weight:600;}
+.field input[type=range]{ width:100%; accent-color:var(--stamp); }
+.field-val{ font-family:var(--mono); font-weight:800; color:var(--stamp); font-size:1.05rem;}
+.rate-chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+.rate-chip{ border:1px solid var(--line); background:var(--paper-alt); padding:6px 12px; border-radius:14px; font-size:.78rem; color:var(--ink-soft);}
+.rate-chip.active{ background:var(--stamp); border-color:var(--stamp); color:var(--stamp-ink);}
+.result-card{ border:1px solid var(--line); background:var(--paper-alt); border-radius:6px; padding:28px;}
+.result-card .big-num{ font-family:var(--mono); font-size:2.4rem; font-weight:800; color:var(--stamp); line-height:1.2;}
+.result-row{ display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed var(--line); font-size:.9rem;}
+.result-row:last-child{ border-bottom:none;}
+.result-row .lab{ color:var(--ink-soft);}
+.result-row .val{ font-family:var(--mono); font-weight:700;}
+
+/* ============ FAQ ============ */
+.faq-item{ border-bottom:1px solid var(--line); }
+.faq-q{ padding:20px 0; display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:1rem;}
+.faq-q .plus{ font-family:var(--mono); color:var(--stamp); transition:transform .25s ease; flex-shrink:0; margin-left:16px;}
+.faq-item.open .plus{ transform:rotate(45deg); }
+.faq-a{ max-height:0; overflow:hidden; transition:max-height .35s ease; color:var(--ink-soft); font-size:.92rem; }
+.faq-item.open .faq-a{ max-height:260px; }
+.faq-a-in{ padding-bottom:20px; line-height:1.85; }
+
+/* ============ Principles / Footer ============ */
+.principle-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+@media (max-width:760px){ .principle-grid{grid-template-columns:1fr;}}
+.principle{ border:1px solid var(--line); background:var(--paper-alt); border-radius:4px; padding:24px;}
+.principle .num{ font-family:var(--mono); color:var(--stamp); font-weight:900; font-size:1.1rem;}
+.principle h4{ margin:10px 0 8px; font-size:1rem;}
+.principle p{ color:var(--ink-soft); font-size:.88rem;}
+
+footer{ padding:60px 0 40px; text-align:center; }
+.foot-stamp{ width:80px; height:80px; margin:0 auto 20px; border:3px solid var(--stamp); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--stamp); font-family:var(--serif); font-weight:900; font-size:.85rem; transform:rotate(-8deg); }
+.disclaimer{ max-width:56ch; margin:20px auto 0; font-size:.78rem; color:var(--ink-faint); line-height:1.8;}
+
+/* progress bar */
+.progress-bar{ position:fixed; top:0; left:0; height:3px; background:var(--stamp); z-index:60; width:0%; transition:width .1s linear;}
+
+@media (max-width:600px){
+  .wrap{padding:0 18px;}
+  section{padding:60px 0;}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="topbar">
+  <div class="brandmark"><span class="chip">存</span> ETF 投資存摺</div>
+  <div class="controls">
+    <button class="ctrl-btn" id="scaleToggle">Ａ字級</button>
+    <button class="ctrl-btn" id="themeToggle">🌙 夜間</button>
+  </div>
+</div>
+
+<nav class="tabnav" id="tabnav">
+  <a href="#hero" data-tip="封面"><span class="tip">封面</span></a>
+  <a href="#why" data-tip="為什麼"><span class="tip">為什麼投資ETF</span></a>
+  <a href="#data" data-tip="數據"><span class="tip">17檔ETF數據</span></a>
+  <a href="#cat" data-tip="分類"><span class="tip">ETF分類</span></a>
+  <a href="#detail" data-tip="詳解"><span class="tip">個股詳解</span></a>
+  <a href="#broker" data-tip="券商"><span class="tip">券商比較</span></a>
+  <a href="#quiz" data-tip="測驗"><span class="tip">風險測驗</span></a>
+  <a href="#alloc" data-tip="配置"><span class="tip">資產配置</span></a>
+  <a href="#dca" data-tip="試算"><span class="tip">定期定額試算</span></a>
+  <a href="#faq" data-tip="心法"><span class="tip">心法與FAQ</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">從零開始 · 新手互動教學</div>
+      <h1>翻開你的<br><em>國外 ETF</em> 投資存摺</h1>
+      <p class="lede">用一本存摺的邏輯，帶你看懂 17 檔美股熱門 ETF、8 大券商複委託費率、風險屬性測驗，到定期定額試算——每一頁都能動手翻。</p>
+      <div class="cta-row">
+        <a href="#why" class="btn-primary">開始翻頁 →</a>
+        <a href="#quiz" class="btn-ghost">先做風險測驗</a>
+      </div>
+    </div>
+    <div class="passbook-art">
+      <div class="pb-stub"></div>
+      <div class="pb-cover">
+        <div class="pb-title">
+          <div class="small">INVESTMENT PASSBOOK</div>
+          <div class="big">ETF 投資存摺</div>
+          <div class="pb-emblem">🌐</div>
+          <div class="small" style="margin-top:18px;">戶名：新手投資人</div>
+        </div>
+      </div>
+      <svg class="stamp-mark" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#AE3B34" stroke-width="4"/>
+        <circle cx="50" cy="50" r="34" fill="none" stroke="#AE3B34" stroke-width="1.5"/>
+        <text x="50" y="46" text-anchor="middle" fill="#AE3B34" font-size="13" font-weight="900" font-family="'Noto Serif TC',serif">開戶</text>
+        <text x="50" y="62" text-anchor="middle" fill="#AE3B34" font-size="9" font-family="'Noto Serif TC',serif">紀念章</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY ETF ============ -->
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">01 / 存摺開頭語</span>
+      <h2>為什麼要投資 ETF？</h2>
+      <p class="desc">比起挑選單一個股，ETF 把數百到數萬家公司打包成「一檔」，用一筆小額資金就能參與全球市場的成長。以下是它最核心的三個優勢：</p>
+    </div>
+    <div class="adv-grid reveal">
+      <div class="adv-card"><span class="idx">01</span><span class="ico">💰</span><h3>低成本優勢</h3><p>美股 ETF 內扣費用最低僅 0.03%，長期複利效果顯著，節省成本就是增加報酬。</p></div>
+      <div class="adv-card"><span class="idx">02</span><span class="ico">🕸️</span><h3>分散風險</h3><p>一檔標的可能持有數百至數萬家公司，有效避開個股倒閉風險，輕鬆實現全球布局。</p></div>
+      <div class="adv-card"><span class="idx">03</span><span class="ico">💧</span><h3>高流動性</h3><p>美股市場是全球最大資金池，買賣價差小、即時成交，進出場都很靈活。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 17 ETF DATA TABLE ============ -->
+<section id="data">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">02 / 交易明細頁</span>
+      <h2>17 檔美股熱門 ETF 全景數據</h2>
+      <p class="desc">點欄位標題可以排序，點上方分類按鈕可以篩選。長期年化報酬率越高，通常波動（標準差）也越大——這是投資最基本的翹翹板關係。</p>
+    </div>
+    <div class="chiprow reveal" id="dataFilters">
+      <button class="chip active" data-cat="all">全部 17 檔</button>
+      <button class="chip" data-cat="global">🌍 全球型</button>
+      <button class="chip" data-cat="us">🇺🇸 美國大盤</button>
+      <button class="chip" data-cat="tech">💻 科技動能</button>
+      <button class="chip" data-cat="div">💰 高股息/價值</button>
+      <button class="chip" data-cat="reit">🏠 REIT</button>
+      <button class="chip" data-cat="bond">🛡 債券</button>
+    </div>
+    <div class="ledger-wrap reveal">
+      <table class="ledger">
+        <thead>
+          <tr>
+            <th data-key="ticker">代號<span class="arrow">▾</span></th>
+            <th data-key="name">名稱</th>
+            <th data-key="fee">內扣費率<span class="arrow">▾</span></th>
+            <th data-key="ret">10年年化報酬<span class="arrow">▾</span></th>
+            <th data-key="risk">波動/回撤<span class="arrow">▾</span></th>
+            <th data-key="tags">屬性</th>
+          </tr>
+        </thead>
+        <tbody id="ledgerBody"></tbody>
+      </table>
+    </div>
+    <p class="hint-note reveal">＊部分標的（DIA、VUG、VTV、IWM、IJH、IJR、AGG）僅提供費用率與最大回撤數據；報酬率欄位以「—」表示無完整揭露。資料整理自使用者提供之簡報，僅供教育參考，不代表未來績效。</p>
+  </div>
+</section>
+
+<!-- ============ CATEGORY CARDS ============ -->
+<section id="cat">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">03 / 分類存根</span>
+      <h2>ETF 六大分類，先搞懂你在買什麼</h2>
+      <p class="desc">點卡片展開，看每個分類的個性與代表標的。</p>
+    </div>
+    <div class="cat-grid reveal" id="catGrid"></div>
+  </div>
+</section>
+
+<!-- ============ ETF DETAIL CARDS ============ -->
+<section id="detail">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">04 / 個股存頁</span>
+      <h2>17 檔 ETF 逐一攤開來看</h2>
+      <p class="desc">點卡片查看每檔 ETF 的優點、缺點與適合的人。</p>
+    </div>
+    <div class="etf-detail-grid reveal" id="detailGrid"></div>
+  </div>
+</section>
+
+<!-- ============ BROKER COMPARISON ============ -->
+<section id="broker">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">05 / 開戶對帳頁</span>
+      <h2>台灣 8 大券商複委託費率比較</h2>
+      <p class="desc">複委託是台灣投資人買美股 ETF 最主流的管道之一。下表整理 8 家券商的單筆與定期定額手續費，點欄位可排序。</p>
+    </div>
+    <div class="ledger-wrap reveal">
+      <table class="ledger">
+        <thead>
+          <tr>
+            <th data-key="name">券商<span class="arrow">▾</span></th>
+            <th data-key="single">單筆買進手續費<span class="arrow">▾</span></th>
+            <th data-key="dca">定期定額手續費</th>
+            <th data-key="note">特色備註</th>
+          </tr>
+        </thead>
+        <tbody id="brokerBody"></tbody>
+      </table>
+    </div>
+
+    <div style="height:50px;"></div>
+
+    <div class="sec-head reveal">
+      <span class="sec-num">05.5 / 管道PK頁</span>
+      <h2>複委託 vs. 海外券商，怎麼選？</h2>
+    </div>
+    <div class="pk-cols reveal">
+      <div class="pk-col pro">
+        <h4>✅ 複委託的優點</h4>
+        <ul>
+          <li>受台灣金管會監管，資金安全性極高</li>
+          <li>本土銀行帳戶直接交割，免除高額電匯費</li>
+          <li>繼承與稅務處理可依國內法律簡易辦理</li>
+          <li>在地中文客服，無時差、無語言隔閡</li>
+        </ul>
+      </div>
+      <div class="pk-col con">
+        <h4>⚠️ 複委託的缺點</h4>
+        <ul>
+          <li>賣出手續費通常高於買進，可能有低消門檻</li>
+          <li>無法操作選擇權、放空或極冷門微型股</li>
+          <li>股息預扣稅（30%）幾乎無法協助退稅</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alloc-note reveal" style="margin-top:26px;">
+      <strong>選擇指南：</strong>小資存股族適合國泰、永豐金或凱基（定期定額手續費最低）；中大額波段交易者可考慮富邦或國泰（單筆折扣或均一價划算）；若你是極頻繁交易、當沖或衍生性商品愛好者，海外券商的交易彈性可能更適合。
+    </div>
+  </div>
+</section>
+
+<!-- ============ RISK QUIZ ============ -->
+<section id="quiz">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">06 / 蓋章鑑定頁</span>
+      <h2>你的風險屬性測驗</h2>
+      <p class="desc">回答一個核心問題，馬上蓋章鑑定你屬於哪種投資性格。</p>
+    </div>
+    <div class="quiz-box reveal">
+      <div id="quizQuestion">
+        <div class="quiz-q">若您的投資組合在三個月內下跌 20%，您的反應是？</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt" data-type="conservative"><span class="letter">A</span><span>驚慌失措，立即停損出場</span></button>
+          <button class="quiz-opt" data-type="moderate"><span class="letter">B</span><span>感到擔憂，但持續觀望等待反彈</span></button>
+          <button class="quiz-opt" data-type="aggressive"><span class="letter">C</span><span>興奮不已，積極逢低加碼</span></button>
+        </div>
+      </div>
+      <div class="quiz-result" id="quizResult">
+        <div class="stamp-final" id="stampFinal"><span class="t1" id="stampT1"></span><span class="t2" id="stampT2">CERTIFIED</span></div>
+        <p class="desc" id="stampDesc"></p>
+        <button class="quiz-retry" id="quizRetry">重新測驗</button>
+        <div style="margin-top:22px;"><a href="#alloc" class="btn-ghost" id="goAlloc">查看我的配置建議 →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ALLOCATION ============ -->
+<section id="alloc">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">07 / 資產配置頁</span>
+      <h2>三大風險屬性的經典配置</h2>
+      <p class="desc">切換屬性與投資期間，看看資金該怎麼分配。</p>
+    </div>
+    <div class="alloc-tabs reveal" id="allocTabs">
+      <button class="alloc-tab active" data-type="conservative">🐢 保守型</button>
+      <button class="alloc-tab" data-type="moderate">⚖️ 穩健型</button>
+      <button class="alloc-tab" data-type="aggressive">🚀 積極型</button>
+    </div>
+    <div class="horizon-toggle reveal" id="horizonToggle">
+      <button class="active" data-h="5">5 年期（短中期目標）</button>
+      <button data-h="20">20 年期（退休長期）</button>
+    </div>
+    <div id="allocPanels" class="reveal"></div>
+  </div>
+</section>
+
+<!-- ============ DCA CALCULATOR ============ -->
+<section id="dca">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">08 / 定期定額試算頁</span>
+      <h2>每月存多少，20 年後會變多少？</h2>
+      <p class="desc">拖拉滑桿，模擬定期定額投入的估算結果（教育用途，非投資建議，未計入手續費與稅負）。</p>
+    </div>
+    <div class="dca-box reveal">
+      <div>
+        <div class="field">
+          <label>每月投入金額（新台幣） <span class="field-val mono" id="valMonthly">10,000</span></label>
+          <input type="range" id="rngMonthly" min="1000" max="50000" step="1000" value="10000">
+        </div>
+        <div class="field">
+          <label>投資年期 <span class="field-val mono" id="valYears">20</span> 年</label>
+          <input type="range" id="rngYears" min="1" max="35" step="1" value="20">
+        </div>
+        <div class="field">
+          <label>預期年化報酬率 <span class="field-val mono" id="valRate">9</span>%</label>
+          <input type="range" id="rngRate" min="1" max="25" step="0.5" value="9">
+          <div class="rate-chips">
+            <button class="rate-chip" data-r="6.6">VT 全球 6.6%</button>
+            <button class="rate-chip active" data-r="9">VOO 大盤 9%</button>
+            <button class="rate-chip" data-r="10.3">QQQ 科技 10.3%</button>
+            <button class="rate-chip" data-r="9.5">SCHD 高股息 9.5%</button>
+          </div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div style="font-size:.82rem; color:var(--ink-soft); margin-bottom:6px;">預估最終資產（新台幣）</div>
+        <div class="big-num" id="resTotal">$0</div>
+        <div style="margin-top:20px;">
+          <div class="result-row"><span class="lab">總投入本金</span><span class="val" id="resPrincipal">$0</span></div>
+          <div class="result-row"><span class="lab">預估投資收益</span><span class="val" id="resGain">$0</span></div>
+          <div class="result-row"><span class="lab">本金佔比</span><span class="val" id="resRatio">0%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRINCIPLES + FAQ ============ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">09 / 保命心法頁</span>
+      <h2>新手上路的三個保命心法</h2>
+    </div>
+    <div class="principle-grid reveal">
+      <div class="principle"><span class="num">01</span><h4>定期定額是最好朋友</h4><p>不要等「跌到底」再買，沒人猜得到底部。固定時間投入、買在平均價，就贏過一半散戶。</p></div>
+      <div class="principle"><span class="num">02</span><h4>忘記密碼，少看盤</h4><p>ETF 是設計來放長線的。買完之後越常看盤，越容易因為恐慌而亂賣。</p></div>
+      <div class="principle"><span class="num">03</span><h4>沒有最好，只有最適合</h4><p>沒有「最強」的組合，只有「你晚上能睡得著」的組合。</p></div>
+    </div>
+
+    <div style="height:60px;"></div>
+    <div class="sec-head reveal"><h2>常見問題 FAQ</h2></div>
+    <div id="faqList" class="reveal"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-stamp">完讀<br>紀念</div>
+    <h3 style="font-size:1.3rem;">感謝翻完這本 ETF 投資存摺</h3>
+    <p class="disclaimer">本網站內容整理自使用者提供之教學簡報與比較表，僅供教育與參考用途，不構成任何投資建議。投資有風險，過往績效不代表未來表現，實際手續費率請以各券商公告為準。</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const ETFS = [
+  {ticker:"VT", name:"全球全市場", cat:"global", fee:0.06, ret:6.58, risk:20.57, riskLabel:"標準差", tags:["核心","分散"], desc:"涵蓋全球近萬家公司，一檔掌握已開發與新興市場，是分散單一國家風險的終極工具。", pro:"充分分散國家風險，一檔佈局全世界。", con:"近10年非美市場表現較弱，整體報酬落後純美股標的。", who:"想要一次買下全世界、追求最大分散的長期投資人。"},
+  {ticker:"VTI", name:"美國全市場", cat:"us", fee:0.03, ret:7.72, risk:19.10, riskLabel:"標準差", tags:["核心","低費"], desc:"涵蓋美國大、中、小型股全覆蓋，約3,600多檔股票，費率極低。", pro:"一鍵布局美國大中小型全市場，費用率僅0.03%。", con:"100% 押注美國經濟，單一國家風險集中。", who:"看好美國長期國運、想長期存股的核心持倉族群。"},
+  {ticker:"SPY", name:"標普500", cat:"us", fee:0.095, ret:8.34, risk:19.32, riskLabel:"標準差", tags:["高流動性"], desc:"追蹤美國500大企業，資產規模全球最大，日均成交量極高。", pro:"流動性世界第一，適合大額交易、選擇權與避險操作。", con:"費率略高於VOO，長期存股用可以有更便宜的選擇。", who:"短線交易者、機構法人、需要極高流動性的投資人。"},
+  {ticker:"VOO", name:"標普500低成本", cat:"us", fee:0.03, ret:12.9, risk:15.2, riskLabel:"標準差", tags:["核心","低費"], desc:"同樣追蹤標普500指數，內扣費用僅0.03%，是市場上最低成本的大盤ETF之一。", pro:"長線首選，費用率極低，適合核心持倉。", con:"與SPY走勢高度相關，兩者只需擇一長期持有。", who:"想長期定期定額、當作資產配置壓艙石的新手首選。"},
+  {ticker:"QQQ", name:"那斯達克100", cat:"tech", fee:0.20, ret:18.2, risk:18.5, riskLabel:"標準差", tags:["高成長","高波動"], desc:"追蹤那斯達克100指數，掌握科技巨頭與AI進攻旗艦，長期報酬高但波動也大。", pro:"流動性極佳，長期報酬歷史上優於大盤。", con:"科技權重偏高、不含金融股，2000年網路泡沫曾重挫近80%。", who:"看好科技與AI趨勢、能承受較大波動的積極型投資人。"},
+  {ticker:"SOXX", name:"半導體晶片", cat:"tech", fee:0.35, ret:24.5, risk:26.8, riskLabel:"標準差", tags:["高波動","主題型"], desc:"聚焦AI與晶片龍頭，如NVIDIA、台積電，是AI算力浪潮下最強力的攻擊型工具。", pro:"10年年化報酬高達24.5%，半導體長期成長動能強勁。", con:"行業循環性強，最大回撤可能超過-41%，費用偏高。", who:"心臟夠大顆、想重壓科技與AI趨勢的積極型投資人。"},
+  {ticker:"SCHD", name:"美國高股息", cat:"div", fee:0.06, ret:9.48, risk:21, riskLabel:"最大回撤", tags:["高股息","抗跌"], desc:"篩選股息連續成長且體質優良的公司，是追求穩定被動收入的首選配置。", pro:"費用僅0.06%，最大回撤-21%，抗震能力強。", con:"殖利率高但成長性相對較低，牛市中漲幅可能落後科技股。", who:"想打造穩定現金流、退休族或保守型投資人。"},
+  {ticker:"VXUS", name:"非美全市場", cat:"global", fee:0.07, ret:3.68, risk:27, riskLabel:"最大回撤", tags:["分散","國際"], desc:"排除美國，持有全球約7,500家非美上市公司，涵蓋已開發與新興市場。", pro:"有效降低單一國家集中風險，是地域分散與再平衡的好工具。", con:"近10年報酬明顯落後美股標的。", who:"想降低美股集中度、做全球再平衡的投資人。"},
+  {ticker:"VNQ", name:"房地產REITs", cat:"reit", fee:0.12, ret:null, risk:29, riskLabel:"最大回撤", tags:["高配息","實物資產"], desc:"投資美國房地產信託，主要成分包含普洛斯、美國塔等，與股債相關性低。", pro:"高配息、現金流穩定，具抗通膨特性。", con:"利率敏感，升息環境下容易承壓，最大回撤約-29%。", who:"想增加收租型現金流、分散股債之外第三類資產的投資人。"},
+  {ticker:"BND", name:"美國總體債", cat:"bond", fee:0.03, ret:null, risk:18, riskLabel:"最大回撤", tags:["低波動","防禦"], desc:"追蹤美國國庫券與政府債，波動極低，是股市大跌時的安全氣囊。", pro:"費用率低，股市修正時提供緩衝，降低整體組合波動。", con:"長期報酬率有限，通膨環境下實質報酬可能為負。", who:"保守型投資人、想降低整體組合波動的核心配置者。"},
+  {ticker:"DIA", name:"道瓊工業藍籌", cat:"us", fee:0.16, ret:null, risk:22, riskLabel:"最大回撤", tags:["藍籌"], desc:"追蹤道瓊工業平均指數，僅含30支美國藍籌龍頭股，採價格加權方式計算。", pro:"成分股皆為傳統藍籌龍頭，品牌知名度高。", con:"價格加權存在結構性缺陷，產業多元性不足。", who:"偏好傳統藍籌股、風格保守的投資人參考。"},
+  {ticker:"VUG", name:"大型成長股", cat:"div", fee:0.04, ret:null, risk:33, riskLabel:"最大回撤", tags:["成長股"], desc:"追蹤大型成長股，偏重高估值與動能股票。", pro:"牛市中表現亮眼，長期資本利得顯著。", con:"殖利率極低，波動較大，不適合追求現金流的投資者。", who:"追求資本利得、不需要股息現金流的成長型投資人。"},
+  {ticker:"VTV", name:"大型價值股", cat:"div", fee:0.04, ret:null, risk:24, riskLabel:"最大回撤", tags:["價值股","防禦"], desc:"聚焦大型價值股，防禦性佳，在市場高估或修正時提供避風港。", pro:"估值合理、股息穩定，適合作為核心持倉。", con:"牛市中漲幅可能落後成長股或科技股。", who:"保守至穩健型、偏好基本面扎實公司的投資人。"},
+  {ticker:"IWM", name:"美國小型股", cat:"div", fee:0.19, ret:null, risk:31, riskLabel:"最大回撤", tags:["小型股","高波動"], desc:"追蹤羅素2000指數，持有約2,000家美國小型企業，波動性較大。", pro:"牛市與景氣擴張期具備驚人的上漲爆發力。", con:"最大回撤超過-33%，需具備承受大幅震盪的心理準備。", who:"積極型投資人，作為衛星配置提升整體爆發力。"},
+  {ticker:"IJH", name:"美國中型股", cat:"div", fee:0.05, ret:null, risk:30, riskLabel:"最大回撤", tags:["中型股"], desc:"追蹤標普中型400指數，涵蓋約400家美國中型企業，高Beta特性。", pro:"景氣回升初期爆發力強勁，歷史上往往優於大型股。", con:"波動仍高於大盤，景氣下行時修正幅度也較大。", who:"穩健至積極型投資者，作為衛星配置的高效工具。"},
+  {ticker:"IJR", name:"美國小型股(核心)", cat:"div", fee:0.06, ret:null, risk:32, riskLabel:"最大回撤", tags:["小型股"], desc:"追蹤標普小型600指數，聚焦美國小型企業，具備較高成長潛力。", pro:"費用率相對低廉，長期具備補強大盤的效果。", con:"波動大，最大回撤可能超過-32%。", who:"積極型投資人，用於補強中小型股曝險。"},
+  {ticker:"AGG", name:"美國核心綜合債", cat:"bond", fee:0.03, ret:null, risk:18, riskLabel:"最大回撤", tags:["低波動","防禦"], desc:"追蹤美國核心綜合債券市場，與BND性質相近，費用率極低。", pro:"波動極低，是資產配置中常見的防禦性核心持倉。", con:"長期報酬有限，通膨環境下實質購買力可能被侵蝕。", who:"想降低整體投資組合波動的保守至穩健型投資人。"},
+];
+
+const CATEGORIES = [
+  {key:"global", emo:"🌍", name:"全球型", desc:"一檔分散到全世界，包含已開發與新興市場，是降低單一國家風險最直接的方式。", members:["VT","VXUS"]},
+  {key:"us", emo:"🇺🇸", name:"美國型", desc:"聚焦美國股市，涵蓋大盤指數或全市場，是多數投資人的核心持倉首選。", members:["VTI","SPY","VOO","DIA"]},
+  {key:"tech", emo:"💻", name:"科技動能型", desc:"追蹤科技巨頭或半導體龍頭，長期成長動能強，但波動與回撤也顯著較大。", members:["QQQ","SOXX","VUG"]},
+  {key:"reit", emo:"🏠", name:"REIT 房地產", desc:"投資房地產信託，提供穩定配息與抗通膨特性，和股債相關性較低。", members:["VNQ"]},
+  {key:"div", emo:"💰", name:"高股息 / 價值", desc:"篩選股息穩健或估值合理的公司，波動相對較低，適合追求現金流的投資人。", members:["SCHD","VTV","VUG","IWM","IJH","IJR"]},
+  {key:"bond", emo:"🛡", name:"債券", desc:"追蹤美國政府或綜合債市，波動極低，是資產配置中的安全氣囊角色。", members:["BND","AGG"]},
+];
+
+const BROKERS = [
+  {name:"國泰證券", single:"0.08%（ETF均一價3美元）", dca:"每筆均一價 0.1 美元", note:"定期定額與ETF單筆均一價極具優勢，適合小資與ETF長期存股族。", tag:"小資推薦"},
+  {name:"永豐金證券", single:"0.08% ~ 0.2%", dca:"每筆 0.1 美元或台幣 1 元", note:"「豐存股」知名度高，台幣/外幣雙通道扣款彈性高。", tag:"品牌知名"},
+  {name:"富邦證券", single:"0.06% ~ 0.25%（新戶0.06%起）", dca:"0.1%（無最低收費）", note:"單筆常有破盤手續費優惠，App操作介面直覺友善。", tag:"新戶優惠"},
+  {name:"元大證券", single:"0.1%", dca:"0.1%（每筆最高1美元）", note:"龍頭券商系統穩定，定期定額設有最高1美元上限，適合中大額存股。", tag:"系統穩定"},
+  {name:"凱基證券", single:"0.1%", dca:"每筆 0.03 美元或台幣 1 元", note:"定期定額手續費極低，系統資源與研究報告豐富。", tag:"低費首選"},
+  {name:"群益證券", single:"0.08% ~ 0.2%（月成交滿100美元享0.08%）", dca:"每筆 0.03 美元（約台幣1元）", note:"單筆與定期定額皆提供相當具競爭力的極低費率。", tag:"低費首選"},
+  {name:"玉山證券", single:"0.25%", dca:"$149以下0.2%／$150-666:0.3美元／$667以上0.18%", note:"適合玉山金控既有客戶整合帳戶管理，定期定額採階梯式收費。", tag:"金控整合"},
+  {name:"中信證券", single:"牌告0.5%（最低收費35美元）", dca:"依最新活動或個別營業員洽詢為主", note:"牌告價格較高，主打高資產VIP客群與專屬理財規劃。", tag:"VIP客群"},
+];
+
+const ALLOC = {
+  conservative:{
+    5:{title:"5年期：防守第一，存頭期款/備用金",
+       parts:[{k:"SCHD 高股息",v:50,c:"var(--stamp)"},{k:"VT 全球全市場",v:30,c:"var(--gold)"},{k:"VTV 大型價值",v:20,c:"var(--ink-soft)"}],
+       note:"5年內可能會用到這筆錢，絕不能買大起大落的科技股。一半資金放SCHD（寶僑、家得寶等穩健大公司），搭配VT與VTV，遇到股災受傷會最輕。"},
+    20:{title:"20年期：長期抗通膨退休金",
+       parts:[{k:"VT 全球全市場",v:40,c:"var(--gold)"},{k:"SCHD 高股息",v:20,c:"var(--stamp)"},{k:"其他增值核心",v:40,c:"var(--ink-soft)"}],
+       note:"時間拉長到20年，過度保守會被通膨吃掉購買力，因此加入偏向股息成長的配置，確保資產能跟上世界成長腳步。"}
+  },
+  moderate:{
+    5:{title:"5年期：進可攻退可守的黃金比例",
+       parts:[{k:"VTI 美國全市場",v:50,c:"var(--ink)"},{k:"QQQ 科技動能",v:20,c:"var(--stamp)"},{k:"VXUS 非美全市場",v:10,c:"var(--gold)"},{k:"其他避震配置",v:20,c:"var(--ink-soft)"}],
+       note:"一半資金放美國大盤穩住陣腳，20%放QQQ賺取科技成長紅利，再用非美市場當避震器，讓整體表現均衡。"},
+    20:{title:"20年期：經典存股組合",
+       parts:[{k:"VTI 美國全市場",v:70,c:"var(--ink)"},{k:"QQQ 科技動能",v:20,c:"var(--stamp)"},{k:"中小型補強",v:10,c:"var(--gold)"}],
+       note:"20年是很長的時間，重壓70%在美國大盤上，歷史證明長期下來表現穩健。加入一小部分中小型股，為長期報酬帶來額外潛力。"}
+  },
+  aggressive:{
+    5:{title:"5年期：火力全開衝刺",
+       parts:[{k:"QQQ 科技動能",v:60,c:"var(--stamp)"},{k:"VTI 美國全市場",v:30,c:"var(--ink)"},{k:"中小型潛力股",v:10,c:"var(--gold)"}],
+       note:"超過一半資金押注科技與半導體相關成長動能，相信AI與科技將持續改變世界，並用少量小型股提升整體獲利彈性。"},
+    20:{title:"20年期：大膽放眼未來",
+       parts:[{k:"QQQ 科技動能",v:50,c:"var(--stamp)"},{k:"SPY 標普500",v:30,c:"var(--ink)"},{k:"新興市場/中小型",v:20,c:"var(--gold)"}],
+       note:"用一半資金抓住世界科技主軸，另外配置新興市場部位，為長期可能出現的下一波成長趨勢提早卡位。"}
+  }
+};
+
+const RISK_RESULT = {
+  conservative:{t1:"保守型", desc:"你偏好資產保值、追求低波動。建議以高評級債券與高股息標的為核心，打造穩健的資產防護網。"},
+  moderate:{t1:"穩健型", desc:"你能接受一定波動，追求長期穩健複利成長。建議以美國大盤為核心，搭配少量科技與海外部位做均衡配置。"},
+  aggressive:{t1:"積極型", desc:"你能承受大幅震盪，追求資產階層跨越與最大資本利得。建議適度重倉科技與高Beta產業，並嚴守長期持有紀律。"}
+};
+
+const FAQS = [
+  {q:"ETF 會不會像個股一樣倒閉下市？", a:"ETF本身是一籃子股票的組合，除非發行公司清算基金（通常因規模過小或需求不足），否則不會像單一公司倒閉般直接歸零。挑選規模大、歷史久的主流ETF（如VOO、VTI）可大幅降低這類風險。"},
+  {q:"需要一次買很多支 ETF 嗎？", a:"不需要。新手常見的迷思是買越多越分散，但如果持股高度重疊（例如同時買VOO和SPY），效果其實有限。掌握2-4檔核心+衛星配置的邏輯，反而更容易管理與再平衡。"},
+  {q:"複委託資金安全嗎？", a:"透過台灣券商複委託，受金管會嚴格監管，資金安全性極高，且可直接用本土銀行帳戶交割，免除電匯的高額成本與時間差。"},
+  {q:"美股配息會被扣多少稅？", a:"非美國籍投資人透過複委託或海外券商投資美股，領到的股息通常會被預扣30%稅金，且複委託管道大多無法協助退稅，這是評估高股息ETF報酬時需要納入考量的成本。"},
+  {q:"要選擇配息型還是不配息（累積型）？", a:"這取決於你的目標：需要現金流（如退休族）適合高股息型（如SCHD）；若目標是長期資產增值、且股息還要被扣30%稅，選擇成長型或大盤型（如VOO、VTI）可能更有效率，因為資本利得對非美籍投資人通常免稅。"},
+];
+
+/* ============================================================
+   RENDER: 17-ETF Ledger Table
+   ============================================================ */
+const ledgerBody = document.getElementById("ledgerBody");
+let currentCat = "all";
+let sortKey = null, sortDir = 1;
+
+function fmtPct(v){ return v===null||v===undefined ? "—" : v.toFixed(2)+"%"; }
+
+function renderLedger(){
+  let rows = ETFS.filter(e=> currentCat==="all" || e.cat===currentCat);
+  if(sortKey){
+    rows = [...rows].sort((a,b)=>{
+      let av = a[sortKey], bv = b[sortKey];
+      if(sortKey==="ticker" || sortKey==="name"){ av=String(av); bv=String(bv); return sortDir*av.localeCompare(bv); }
+      av = av===null?-999:av; bv = bv===null?-999:bv;
+      return sortDir*(av-bv);
+    });
+  }
+  ledgerBody.innerHTML = rows.map(e=>`
+    <tr>
+      <td class="tk">${e.ticker}</td>
+      <td><span class="tk-name">${e.name}</span></td>
+      <td class="mono">${e.fee.toFixed(2)}%</td>
+      <td class="${e.ret===null?'':'pos'} mono">${fmtPct(e.ret)}</td>
+      <td class="mono neg">${e.risk}% <span style="color:var(--ink-faint); font-size:.72rem;">(${e.riskLabel})</span></td>
+      <td>${e.tags.map(t=>`<span class="tag-mini">${t}</span>`).join("")}</td>
+    </tr>
+  `).join("");
+}
+renderLedger();
+
+document.getElementById("dataFilters").addEventListener("click", (ev)=>{
+  const btn = ev.target.closest(".chip"); if(!btn) return;
+  document.querySelectorAll("#dataFilters .chip").forEach(c=>c.classList.remove("active"));
+  btn.classList.add("active");
+  currentCat = btn.dataset.cat;
+  renderLedger();
+});
+document.querySelectorAll(".ledger thead th[data-key]").forEach(th=>{
+  th.addEventListener("click", ()=>{
+    const key = th.dataset.key;
+    if(th.closest("table").querySelector("#ledgerBody") === ledgerBody){
+      if(sortKey===key) sortDir*=-1; else { sortKey=key; sortDir=1; }
+      renderLedger();
+    }
+  });
+});
+
+/* ============================================================
+   RENDER: Category cards
+   ============================================================ */
+const catGrid = document.getElementById("catGrid");
+catGrid.innerHTML = CATEGORIES.map(c=>`
+  <div class="cat-card" data-key="${c.key}">
+    <div class="cat-head">
+      <span class="emo">${c.emo}</span>
+      <h4>${c.name}</h4>
+      <span class="plus">+</span>
+    </div>
+    <div class="cat-body"><div class="cat-body-in">
+      <p>${c.desc}</p>
+      <div class="members">${c.members.map(m=>`<span>${m}</span>`).join("")}</div>
+    </div></div>
+  </div>
+`).join("");
+catGrid.addEventListener("click",(ev)=>{
+  const card = ev.target.closest(".cat-card"); if(!card) return;
+  card.classList.toggle("open");
+});
+
+/* ============================================================
+   RENDER: ETF detail flip cards
+   ============================================================ */
+const detailGrid = document.getElementById("detailGrid");
+detailGrid.innerHTML = ETFS.map(e=>`
+  <div class="etf-card" data-tk="${e.ticker}">
+    <span class="peek">點開</span>
+    <div class="tk">${e.ticker}</div>
+    <div class="full">${e.name}</div>
+    <div class="metric-row"><span class="mono" style="color:var(--ink-soft)">費率 ${e.fee}%</span><span class="mono neg">${e.riskLabel} ${e.risk}%</span></div>
+    <div class="expand">
+      <p>${e.desc}</p>
+      <p style="margin-top:8px;"><strong style="color:var(--green)">優點：</strong>${e.pro}</p>
+      <p style="margin-top:6px;"><strong style="color:var(--red)">缺點：</strong>${e.con}</p>
+      <p style="margin-top:6px;"><strong style="color:var(--gold)">適合誰：</strong>${e.who}</p>
+    </div>
+  </div>
+`).join("");
+detailGrid.addEventListener("click",(ev)=>{
+  const card = ev.target.closest(".etf-card"); if(!card) return;
+  card.classList.toggle("open");
+});
+
+/* ============================================================
+   RENDER: Broker table
+   ============================================================ */
+const brokerBody = document.getElementById("brokerBody");
+let brokerSortKey = null, brokerSortDir = 1;
+function renderBrokers(){
+  let rows = [...BROKERS];
+  if(brokerSortKey==="single" || brokerSortKey==="name"){
+    rows.sort((a,b)=> brokerSortDir*a[brokerSortKey].localeCompare(b[brokerSortKey]));
+  }
+  brokerBody.innerHTML = rows.map(b=>`
+    <tr>
+      <td class="tk" style="font-family:var(--sans); font-size:.95rem;">${b.name} <span class="tag-mini">${b.tag}</span></td>
+      <td class="mono">${b.single}</td>
+      <td class="mono">${b.dca}</td>
+      <td style="white-space:normal; color:var(--ink-soft); font-size:.85rem; min-width:220px;">${b.note}</td>
+    </tr>
+  `).join("");
+}
+renderBrokers();
+document.querySelectorAll('.ledger thead th[data-key="single"], .ledger thead th[data-key="name"]').forEach(th=>{
+  th.addEventListener("click", ()=>{
+    if(th.closest("table").querySelector("#brokerBody")===brokerBody){
+      const key = th.dataset.key;
+      if(brokerSortKey===key) brokerSortDir*=-1; else { brokerSortKey=key; brokerSortDir=1; }
+      renderBrokers();
+    }
+  });
+});
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+document.querySelectorAll(".quiz-opt").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const type = btn.dataset.type;
+    const r = RISK_RESULT[type];
+    document.getElementById("quizQuestion").style.display="none";
+    const res = document.getElementById("quizResult");
+    res.classList.add("show");
+    document.getElementById("stampT1").textContent = r.t1;
+    document.getElementById("stampDesc").textContent = r.desc;
+    document.getElementById("goAlloc").dataset.type = type;
+    // reset stamp animation
+    const sf = document.getElementById("stampFinal");
+    sf.style.animation="none"; sf.offsetHeight; sf.style.animation=null;
+  });
+});
+document.getElementById("quizRetry").addEventListener("click", ()=>{
+  document.getElementById("quizResult").classList.remove("show");
+  document.getElementById("quizQuestion").style.display="block";
+});
+document.getElementById("goAlloc").addEventListener("click",(ev)=>{
+  const type = ev.currentTarget.dataset.type;
+  if(type){ setTimeout(()=>selectAllocTab(type), 300); }
+});
+
+/* ============================================================
+   ALLOCATION donut + tabs
+   ============================================================ */
+let currentAllocType = "conservative";
+let currentHorizon = "5";
+
+function donutSVG(parts){
+  const size=220, r=80, cx=size/2, cy=size/2, circ=2*Math.PI*r;
+  let offset=0;
+  const segs = parts.map(p=>{
+    const len = circ*(p.v/100);
+    const seg = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${p.c}" stroke-width="34"
+      stroke-dasharray="${len} ${circ-len}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += len;
+    return seg;
+  }).join("");
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${segs}
+    <circle cx="${cx}" cy="${cy}" r="46" fill="var(--paper-alt)"/>
+  </svg>`;
+}
+
+function renderAlloc(){
+  const data = ALLOC[currentAllocType][currentHorizon];
+  const wrap = document.getElementById("allocPanels");
+  wrap.innerHTML = `
+    <div class="alloc-panel show">
+      <div class="donut-wrap">${donutSVG(data.parts)}</div>
+      <div>
+        <h3 style="font-size:1.15rem; margin-bottom:16px;">${data.title}</h3>
+        <div class="legend">
+          ${data.parts.map(p=>`<div class="legend-row"><span class="legend-swatch" style="background:${p.c}"></span>${p.k}<span class="pct">${p.v}%</span></div>`).join("")}
+        </div>
+        <div class="alloc-note">${data.note}</div>
+      </div>
+    </div>
+  `;
+}
+function selectAllocTab(type){
+  currentAllocType = type;
+  document.querySelectorAll(".alloc-tab").forEach(t=>t.classList.toggle("active", t.dataset.type===type));
+  renderAlloc();
+}
+document.getElementById("allocTabs").addEventListener("click",(ev)=>{
+  const btn = ev.target.closest(".alloc-tab"); if(!btn) return;
+  selectAllocTab(btn.dataset.type);
+});
+document.getElementById("horizonToggle").addEventListener("click",(ev)=>{
+  const btn = ev.target.closest("button"); if(!btn) return;
+  document.querySelectorAll("#horizonToggle button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  currentHorizon = btn.dataset.h;
+  renderAlloc();
+});
+renderAlloc();
+
+/* ============================================================
+   DCA CALCULATOR
+   ============================================================ */
+const rngMonthly = document.getElementById("rngMonthly");
+const rngYears = document.getElementById("rngYears");
+const rngRate = document.getElementById("rngRate");
+function fmtMoney(n){ return "$"+Math.round(n).toLocaleString("en-US"); }
+function calcDCA(){
+  const monthly = +rngMonthly.value;
+  const years = +rngYears.value;
+  const rate = +rngRate.value/100;
+  const months = years*12;
+  const mRate = rate/12;
+  let fv;
+  if(mRate===0){ fv = monthly*months; } else { fv = monthly * ((Math.pow(1+mRate, months)-1)/mRate); }
+  const principal = monthly*months;
+  const gain = fv - principal;
+  document.getElementById("valMonthly").textContent = monthly.toLocaleString("en-US");
+  document.getElementById("valYears").textContent = years;
+  document.getElementById("valRate").textContent = rngRate.value;
+  document.getElementById("resTotal").textContent = fmtMoney(fv);
+  document.getElementById("resPrincipal").textContent = fmtMoney(principal);
+  document.getElementById("resGain").textContent = fmtMoney(gain);
+  document.getElementById("resRatio").textContent = Math.round(principal/fv*100)+"%";
+}
+[rngMonthly, rngYears, rngRate].forEach(el=> el.addEventListener("input", calcDCA));
+document.querySelectorAll(".rate-chip").forEach(chip=>{
+  chip.addEventListener("click", ()=>{
+    document.querySelectorAll(".rate-chip").forEach(c=>c.classList.remove("active"));
+    chip.classList.add("active");
+    rngRate.value = chip.dataset.r;
+    calcDCA();
+  });
+});
+calcDCA();
+
+/* ============================================================
+   FAQ accordion
+   ============================================================ */
+const faqList = document.getElementById("faqList");
+faqList.innerHTML = FAQS.map((f,i)=>`
+  <div class="faq-item" data-i="${i}">
+    <div class="faq-q"><span>${f.q}</span><span class="plus">+</span></div>
+    <div class="faq-a"><div class="faq-a-in">${f.a}</div></div>
+  </div>
+`).join("");
+faqList.addEventListener("click",(ev)=>{
+  const item = ev.target.closest(".faq-item"); if(!item) return;
+  item.classList.toggle("open");
+});
+
+/* ============================================================
+   THEME / SCALE TOGGLES
+   ============================================================ */
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.addEventListener("click", ()=>{
+  const html = document.documentElement;
+  const isDark = html.getAttribute("data-theme")==="dark";
+  html.setAttribute("data-theme", isDark?"light":"dark");
+  themeToggle.innerHTML = isDark ? "🌙 夜間" : "☀️ 日間";
+});
+const scaleToggle = document.getElementById("scaleToggle");
+scaleToggle.addEventListener("click", ()=>{
+  const html = document.documentElement;
+  const isLarge = html.getAttribute("data-scale")==="large";
+  html.setAttribute("data-scale", isLarge?"normal":"large");
+  scaleToggle.classList.toggle("active", !isLarge);
+});
+
+/* ============================================================
+   SCROLL: progress bar, reveal, nav highlight
+   ============================================================ */
+const progressBar = document.getElementById("progressBar");
+window.addEventListener("scroll", ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progressBar.style.width = scrolled+"%";
+}, {passive:true});
+
+const revealEls = document.querySelectorAll(".reveal");
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } });
+}, {threshold:.12});
+revealEls.forEach(el=>io.observe(el));
+
+const navLinks = document.querySelectorAll(".tabnav a");
+const sections = [...navLinks].map(a=>document.querySelector(a.getAttribute("href")));
+const navIO = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      const id = "#"+en.target.id;
+      navLinks.forEach(a=>a.classList.toggle("active", a.getAttribute("href")===id));
+    }
+  });
+}, {threshold:.4, rootMargin:"-10% 0px -60% 0px"});
+sections.forEach(s=> s && navIO.observe(s));
+</script>
+</body>
+</html>
