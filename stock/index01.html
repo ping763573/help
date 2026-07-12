@@ -257,6 +257,23 @@ tbody tr:hover{ background:#faf6e8; }
 .mini-stamp.v{ background:rgba(60,107,88,0.12); color:var(--verify-teal); }
 .mini-stamp.u{ background:rgba(184,56,46,0.12); color:var(--stamp-red); }
 
+/* 新增投信官網連結按鈕樣式 */
+.issuer-link {
+  display: inline-block;
+  padding: 4px 8px;
+  background: rgba(27, 42, 74, 0.06);
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 11.5px;
+  border-radius: 4px;
+  font-family: "Noto Sans TC", sans-serif;
+  transition: all 0.2s;
+}
+.issuer-link:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
 /* ===== chapter 4: calendar ===== */
 .calendar-track{ position:relative; padding-left:26px; margin-top:20px;}
 .calendar-track::before{ content:""; position:absolute; left:6px; top:0; bottom:0; width:2px; background:var(--line);}
@@ -407,6 +424,7 @@ footer a{ color:#C8AA6E; }
             <th data-key="freq">配息頻率</th>
             <th data-key="yield">最近年化殖利率</th>
             <th data-key="status">查證</th>
+            <th style="cursor:default;">投信官網</th>
           </tr>
         </thead>
         <tbody id="cmpBody"></tbody>
@@ -498,21 +516,21 @@ footer a{ color:#C8AA6E; }
 <script>
 /* ============ DATA ============ */
 const ETFS = [
-  {code:"0050", name:"元大台灣50", type:"市值型", nav:"105.26", size:"22036", freq:"半年配", div:"0.60", exdate:"07/21", paydate:"08/10", yieldv:"約2%", status:"v", note:"NAV與規模已核對TWSE/元大投信官網（2026/07/09）。配息0.6元、除息7/21、發放8/10 已由多方媒體證實。"},
-  {code:"0056", name:"元大高股息", type:"高股息型", nav:"52.75(市)", size:"7164", freq:"季配", div:"1.35", exdate:"07/21", paydate:"08/10", yieldv:"約10.2%", status:"v", note:"規模逾7,164億、配息1.35元創季配新高、年化殖利率10.24%，已由鉅亨網／聯合新聞網等多篇報導證實。"},
-  {code:"00878", name:"國泰永續高股息", type:"高股息型", nav:"33.26", size:"6000+", freq:"季配", div:"0.66", exdate:"05/19(Q2已發)", paydate:"06/12(已發)", yieldv:"約7~8%", status:"v", note:"規模2026/6突破6,000億已核實"},
-  {code:"00919", name:"群益台灣精選高息", type:"高股息型", nav:"29.92", size:"5408", freq:"季配", div:"1.00", exdate:"06-07月週期", paydate:"07/13", yieldv:"約9~13%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00929", name:"復華台灣科技優息", type:"科技優息型", nav:"30.14", size:"1372", freq:"月配", div:"0.38", exdate:"07/21", paydate:"08/14", yieldv:"約10~14.8%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"006208", name:"富邦台50", type:"市值型", nav:"245.70(市)", size:"4472", freq:"半年配", div:"4.75", exdate:"07/16", paydate:"08/10", yieldv:"約3.8%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00713", name:"元大台灣高息低波", type:"高股息型", nav:"60.70", size:"1057", freq:"季配", div:"9月週期", exdate:"9月週期", paydate:"10月週期", yieldv:"約6~7.5%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00915", name:"凱基優選高股息30", type:"高股息型", nav:"32.09", size:"173", freq:"季配", div:"9月週期", exdate:"9月週期", paydate:"10月週期", yieldv:"約8~10%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00918", name:"大華優利高填息30", type:"高股息型", nav:"31.94(市)", size:"1149", freq:"季配", div:"1.26", exdate:"06/18", paydate:"07月", yieldv:"約10~13%", status:"p", note:"規模突破1,149億元、6月配息100%來自資本利得，已由聯合新聞網等報導部分佐證；其餘細節未逐一核實。"},
-  {code:"00934", name:"中信成長高股息", type:"高股息型", nav:"14.85", size:"50+", freq:"月配", div:"0.30", exdate:"07/16", paydate:"08/11", yieldv:"待核實", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00936", name:"台新永續高息中小型", type:"ESG型", nav:"20.93", size:"20+", freq:"月配", div:"0.12~0.34", exdate:"07/15", paydate:"08/04", yieldv:"約6.5~8%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00940", name:"元大台灣價值高息", type:"高股息型", nav:"12.56", size:"6936", freq:"月配", div:"0.05", exdate:"07/09", paydate:"08/03", yieldv:"待核實", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00692", name:"富邦公司治理", type:"ESG型", nav:"91.65", size:"100+", freq:"半年配", div:"1.92", exdate:"07/16", paydate:"08/10", yieldv:"約4~5.5%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00922", name:"國泰台灣領袖500", type:"ESG型", nav:"40.28", size:"80+", freq:"半年配", div:"10月週期", exdate:"10月週期", paydate:"11月週期", yieldv:"約4~5%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
-  {code:"00923", name:"群益台ESG低碳50", type:"ESG型", nav:"41.86", size:"80+", freq:"半年配", div:"1.71", exdate:"8月週期", paydate:"9月週期", yieldv:"約4~5%", status:"u", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"0050", name:"元大台灣50", type:"市值型", nav:"105.26", size:"22036", freq:"半年配", div:"0.60", exdate:"07/21", paydate:"08/10", yieldv:"約2%", status:"v", issuerUrl:"https://www.yuantaetfs.com/", note:"NAV與規模已核對TWSE/元大投信官網（2026/07/09）。配息0.6元、除息7/21、發放8/10 已由多方媒體證實。"},
+  {code:"0056", name:"元大高股息", type:"高股息型", nav:"52.75(市)", size:"7164", freq:"季配", div:"1.35", exdate:"07/21", paydate:"08/10", yieldv:"約10.2%", status:"v", issuerUrl:"https://www.yuantaetfs.com/", note:"規模逾7,164億、配息1.35元創季配新高、年化殖利率10.24%，已由鉅亨網／聯合新聞網等多篇報導證實。"},
+  {code:"00878", name:"國泰永續高股息", type:"高股息型", nav:"33.26", size:"6000+", freq:"季配", div:"0.66", exdate:"05/19(Q2已發)", paydate:"06/12(已發)", yieldv:"約7~8%", status:"v", issuerUrl:"https://www.cathaysite.com.tw/ETF", note:"規模2026/6突破6,000億已核實；但文件原稱『08/17除息、9月發放』經查證為對下一季的推測，最近一次已公告配息其實是Q2 0.66元、5/19除息、6/12已發放完畢——文件此處有落差。"},
+  {code:"00919", name:"群益台灣精選高息", type:"高股息型", nav:"29.92", size:"5408", freq:"季配", div:"1.00", exdate:"06-07月週期", paydate:"07/13", yieldv:"約9~13%", status:"u", issuerUrl:"https://www.capitalfund.com.tw/etf", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00929", name:"復華台灣科技優息", type:"科技優息型", nav:"30.14", size:"1372", freq:"月配", div:"0.38", exdate:"07/21", paydate:"08/14", yieldv:"約10~14.8%", status:"u", issuerUrl:"https://www.fhtrust.com.tw/ETF/index", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"006208", name:"富邦台50", type:"市值型", nav:"245.70(市)", size:"4472", freq:"半年配", div:"4.75", exdate:"07/16", paydate:"08/10", yieldv:"約3.8%", status:"u", issuerUrl:"https://websys.fsit.com.tw/FubonETF/", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00713", name:"元大台灣高息低波", type:"高股息型", nav:"60.70", size:"1057", freq:"季配", div:"9月週期", exdate:"9月週期", paydate:"10月週期", yieldv:"約6~7.5%", status:"u", issuerUrl:"https://www.yuantaetfs.com/", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00915", name:"凱基優選高股息30", type:"高股息型", nav:"32.09", size:"173", freq:"季配", div:"9月週期", exdate:"9月週期", paydate:"10月週期", yieldv:"約8~10%", status:"u", issuerUrl:"https://www.kgifund.com.tw/Home/ETF", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00918", name:"大華優利高填息30", type:"高股息型", nav:"31.94(市)", size:"1149", freq:"季配", div:"1.26", exdate:"06/18", paydate:"07月", yieldv:"約10~13%", status:"p", issuerUrl:"https://www.uobam.com.tw/fund/etf", note:"規模突破1,149億元、6月配息100%來自資本利得，已由聯合新聞網等報導部分佐證；其餘細節未逐一核實。"},
+  {code:"00934", name:"中信成長高股息", type:"高股息型", nav:"14.85", size:"50+", freq:"月配", div:"0.30", exdate:"07/16", paydate:"08/11", yieldv:"待核實", status:"u", issuerUrl:"https://www.ctbcinvestments.com/", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00936", name:"台新永續高息中小型", type:"ESG型", nav:"20.93", size:"20+", freq:"月配", div:"0.12~0.34", exdate:"07/15", paydate:"08/04", yieldv:"約6.5~8%", status:"u", issuerUrl:"https://www.tsit.com.tw/ETF", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00940", name:"元大台灣價值高息", type:"高股息型", nav:"12.56", size:"6936", freq:"月配", div:"0.05", exdate:"07/09", paydate:"08/03", yieldv:"待核實", status:"u", issuerUrl:"https://www.yuantaetfs.com/", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00692", name:"富邦公司治理", type:"ESG型", nav:"91.65", size:"100+", freq:"半年配", div:"1.92", exdate:"07/16", paydate:"08/10", yieldv:"約4~5.5%", status:"u", issuerUrl:"https://websys.fsit.com.tw/FubonETF/", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00922", name:"國泰台灣領袖500", type:"ESG型", nav:"40.28", size:"80+", freq:"半年配", div:"10月週期", exdate:"10月週期", paydate:"11月週期", yieldv:"約4~5%", status:"u", issuerUrl:"https://www.cathaysite.com.tw/ETF", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
+  {code:"00923", name:"群益台ESG低碳50", type:"ESG型", nav:"41.86", size:"80+", freq:"半年配", div:"1.71", exdate:"8月週期", paydate:"9月週期", yieldv:"約4~5%", status:"u", issuerUrl:"https://www.capitalfund.com.tw/etf", note:"數字取自使用者提供文件，未逐一以搜尋核實，僅供參考。"},
 ];
 
 const TYPE_COLORS = {"市值型":"#324364","高股息型":"#B8382E","ESG型":"#3C6B58","科技優息型":"#A9812F"};
@@ -601,6 +619,7 @@ function renderTable(list){
       <td>${e.freq}</td>
       <td>${e.yieldv}</td>
       <td><span class="mini-stamp ${e.status==='u'?'u':'v'}">${e.status==='v'?'已核實':(e.status==='p'?'部分核實':'待查證')}</span></td>
+      <td><a href="${e.issuerUrl}" target="_blank" rel="noopener noreferrer" class="issuer-link">前往</a></td>
     </tr>
   `).join("");
 }
@@ -609,6 +628,7 @@ let sortDir = {};
 document.querySelectorAll('#cmpTable thead th').forEach(th=>{
   th.addEventListener('click', ()=>{
     const key = th.dataset.key;
+    if(!key) return; // 避免點擊到沒有設定排序功能的新欄位時出錯
     sortDir[key] = !sortDir[key];
     const sorted = [...ETFS].sort((a,b)=>{
       let av=a[key], bv=b[key];
